@@ -29,8 +29,9 @@ services:
     image: jgeusebroek/spotweb:latest@sha256:69245f9ac130d71ee5e95b4a11e1c6fcca61cf602e936c6aa5bbedb2c14fefee
     restart: on-failure
     # De image draait upgrade-db.php één keer bij de start; op een lege database maakt die eerste ronde alleen het
-    # schema en blijft Spotweb om een tweede ronde vragen. Op de Umbrel is geen shell, dus hier vanzelf nog een keer.
-    entrypoint: ["/bin/bash", "-c", "(sleep 45; /usr/bin/php /var/www/spotweb/bin/upgrade-db.php >/dev/null 2>&1) & exec /entrypoint.sh"]
+    # schema en blijft Spotweb om een tweede ronde vragen. Op de Umbrel is geen shell, dus hier vanzelf nog een keer, pas
+    # nadat Apache draait (= eerste ronde klaar; op de Umbrel duurt die ~40 s, een vaste wachttijd overlapte).
+    entrypoint: ["/bin/bash", "-c", "(until pgrep -x apache2 >/dev/null; do sleep 5; done; sleep 5; /usr/bin/php /var/www/spotweb/bin/upgrade-db.php >/dev/null 2>&1) & exec /entrypoint.sh"]
     depends_on:
       db:
         condition: service_healthy
