@@ -31,7 +31,9 @@ services:
     # De image draait upgrade-db.php één keer bij de start; op een lege database maakt die eerste ronde alleen het
     # schema en blijft Spotweb om een tweede ronde vragen. Op de Umbrel is geen shell, dus hier vanzelf nog een keer, pas
     # nadat Apache draait (= eerste ronde klaar; op de Umbrel duurt die ~40 s, een vaste wachttijd overlapte).
-    entrypoint: ["/bin/bash", "-c", "(until pgrep -x apache2 >/dev/null; do sleep 5; done; sleep 5; /usr/bin/php /var/www/spotweb/bin/upgrade-db.php >/dev/null 2>&1) & exec /entrypoint.sh"]
+    # Daarna eenmalig het admin-wachtwoord resetten naar "spotweb": upgrade-db maakt admin aan vóórdat de
+    # wachtwoord-salt bestaat, waardoor het standaardwachtwoord nooit werkt. Vlagbestand voorkomt herhaling.
+    entrypoint: ["/bin/bash", "-c", "(until pgrep -x apache2 >/dev/null; do sleep 5; done; sleep 5; cd /var/www/spotweb; /usr/bin/php bin/upgrade-db.php >/dev/null 2>&1; [ -f /config/.admin-reset-done ] || { /usr/bin/php bin/upgrade-db.php --reset-password admin >/dev/null 2>&1 && touch /config/.admin-reset-done; }) & exec /entrypoint.sh"]
     depends_on:
       db:
         condition: service_healthy

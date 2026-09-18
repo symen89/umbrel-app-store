@@ -2,7 +2,7 @@ manifestVersion: 1
 id: degroot-spotweb
 category: media
 name: Spotweb
-version: "2026.09.12-1"
+version: "2026.09.12-2"
 tagline: Dutch usenet spots as a newznab indexer
 icon: https://raw.githubusercontent.com/spotweb/spotweb/master/images/touch-icon-iphone4.png
 description: >-
@@ -21,7 +21,7 @@ port: 8785
 gallery: []
 path: ""
 defaultUsername: "admin"
-defaultPassword: "admin"
-releaseNotes: "Database upgrade now waits for the first start to finish."
+defaultPassword: "spotweb"
+releaseNotes: "One-time admin password reset to the default, so the first login works."
 submitter: symen89
 submission: https://github.com/symen89
