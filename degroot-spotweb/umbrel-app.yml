@@ -1,0 +1,27 @@
+manifestVersion: 1
+id: degroot-spotweb
+category: media
+name: Spotweb
+version: "2026.09.12"
+tagline: Dutch usenet spots as a newznab indexer
+icon: https://raw.githubusercontent.com/spotweb/spotweb/master/images/touch-icon-iphone4.png
+description: >-
+  Spotweb reads the Dutch "spotnet" posts from your own usenet provider and offers them as a newznab indexer.
+  Add it to Prowlarr with URL http://degroot-spotweb_web_1 and the API key from your Spotweb user page.
+
+
+  First start: log in with the default account, change the password, then enter your usenet server under
+  Settings → News server. Retrieval of spots runs every 15 minutes; the first run takes hours.
+developer: Spotweb
+website: https://github.com/spotweb/spotweb
+dependencies: []
+repo: https://github.com/spotweb/spotweb
+support: https://github.com/spotweb/spotweb/issues
+port: 8785
+gallery: []
+path: ""
+defaultUsername: "admin"
+defaultPassword: "spotweb"
+releaseNotes: ""
+submitter: symen89
+submission: https://github.com/symen89

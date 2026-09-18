@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: degroot-spotweb_web_1
+      APP_PORT: 80
+
+  db:
+    image: mariadb:11@sha256:79d59758afc91b89b120b0a8904d637f5a3b3e1c4900f29b740d6d46c72fef68
+    user: "1000:1000"
+    restart: on-failure
+    volumes:
+      - ${APP_DATA_DIR}/data/db:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=spotweb
+      - MARIADB_USER=spotweb
+      - MARIADB_PASSWORD=${APP_SEED}
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_AUTO_UPGRADE=1
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  web:
+    image: jgeusebroek/spotweb:latest@sha256:69245f9ac130d71ee5e95b4a11e1c6fcca61cf602e936c6aa5bbedb2c14fefee
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ${APP_DATA_DIR}/data/config:/config
+    environment:
+      - TZ=Europe/Amsterdam
+      - SPOTWEB_DB_TYPE=pdo_mysql
+      - SPOTWEB_DB_HOST=degroot-spotweb_db_1
+      - SPOTWEB_DB_PORT=3306
+      - SPOTWEB_DB_NAME=spotweb
+      - SPOTWEB_DB_USER=spotweb
+      - SPOTWEB_DB_PASS=${APP_SEED}
+      - SPOTWEB_CRON_RETRIEVE=*/15 * * * *
+      - SPOTWEB_CRON_CACHE_CHECK=10 */1 * * *
