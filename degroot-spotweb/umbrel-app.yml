@@ -21,7 +21,7 @@ port: 8785
 gallery: []
 path: ""
 defaultUsername: "admin"
-defaultPassword: "spotweb"
+defaultPassword: "admin"
 releaseNotes: "Database upgrade now waits for the first start to finish."
 submitter: symen89
 submission: https://github.com/symen89
